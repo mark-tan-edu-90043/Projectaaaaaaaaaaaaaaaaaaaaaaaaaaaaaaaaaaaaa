@@ -14,6 +14,7 @@ import {
   Text,
   useColorScheme,
   View,
+  Touchable,
 } from 'react-native';
 
 import {
@@ -23,6 +24,12 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack'; 
+import { useNavigation } from '@react-navigation/native';
+import Game from './Game';
+import styles from './styles';
 
 
 function Section({children, title}) {
@@ -58,8 +65,11 @@ function App(){
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const Stack = createStackNavigator(); 
+
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <NavigationContainer>
+      <SafeAreaView style={backgroundStyle}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
@@ -76,30 +86,13 @@ function App(){
             Edit <Text style={styles.highlight}>App.tsx</Text> to change this
             screen and then come back to see your edits.
           </Section>
-          <LearnMoreLinks />
+
+          <Game />
         </View>
       </ScrollView>
     </SafeAreaView>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
