@@ -96,10 +96,19 @@ const Board = () => {
   return (
     <>
     <View>
-      
+      <Text style={styles.titleText}>Linked 4</Text>
+    </View>
+    <View style={[styles.row, styles.playerBoxes]}>
+      <View style={[styles.playerTag, styles.row, currentPlayer === 'Player 1' ? styles.playerTagActive : null]}>
+        <Image source={require('../assets/p1_token.png')} style={styles.tokenImage} />
+        <Text style={styles.nameTag}> Player 1 </Text>
+      </View>
+      <View style={[styles.playerTag, styles.row, currentPlayer === 'Player 2' ? styles.playerTagActive : null]}>
+        <Image source={require('../assets/p2_token.png')} style={styles.tokenImage} />
+        <Text style={styles.nameTag}> Player 2 </Text>
+      </View>
     </View>
     <View style={styles.container}>
-    <Text style={styles.titleText}>Linked 4</Text>
     <Text style={[styles.turnText, currentPlayer === 'Player 1' ? styles.playerOne : styles.playerTwo]}>{`${currentPlayer}'s Turn`}</Text>
       {board.map((row, rowIndex) => (
         <View key={rowIndex} style={styles.row}>
@@ -111,10 +120,10 @@ const Board = () => {
             disabled={!!cell}
           >
             {cell === 'Player 1' && (
-              <Image source={require('../assets/red_token.png')} style={styles.tokenImage} />
+              <Image source={require('../assets/p1_token.png')} style={styles.tokenImage} />
             )}
             {cell === 'Player 2' && (
-              <Image source={require('../assets/black_token.png')} style={styles.tokenImage} />
+              <Image source={require('../assets/p2_token.png')} style={styles.tokenImage} />
             )}
           </TouchableOpacity>
           
@@ -136,7 +145,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#393d74',
-    marginTop: '50%',
     padding: 'auto',
     maxWidth: '100%',
   },
@@ -177,17 +185,44 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     color: 'white',
+    alignSelf: 'center',
   },
   turnText: {
     fontSize: 15,
     fontWeight: 'bold',
   },
   playerOne: {
-    color: 'red',
+    color: '#ED8FA1',
   },
   playerTwo: {
-    color: 'black',
+    color: '#F3E0AE',
   },
+  playerBoxes: {
+    marginTop: 20,
+    marginBottom: 20,
+    paddingLeft: 40,
+    paddingRight: 40,
+  },
+  playerTag: {
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: '#393d74',
+    padding: 20,
+    justifyContent: 'center', // Center vertically
+    alignItems: 'center', // Center horizontally  
+    opacity: 0.7,
+  },  
+  playerTagActive: {
+    borderRadius: 5,
+    borderColor: '#ffffff',
+    borderWidth: 2,
+    opacity: 1,
+  },
+  nameTag: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'white',
+  }
 });
 
 export default Board;
