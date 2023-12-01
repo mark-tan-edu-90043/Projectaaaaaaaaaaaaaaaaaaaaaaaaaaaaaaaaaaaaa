@@ -1,167 +1,193 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import Slot from './Slot'; // Assuming Slot is another React Native component
+import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
+
+const ROWS = 6;
+const COLS = 7;
+
+const initialState = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
 
 const Board = () => {
-  const [board, setBoard] = useState([
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '']
-  ]);
+  const [board, setBoard] = useState(initialState);
+  const [currentPlayer, setCurrentPlayer] = useState('Player 1');
 
-  const [currPlayer, setCurrPlayer] = useState('X');
-  const [oppPlayer, setOppPlayer] = useState('O');
-  const [gameOver, setGameOver] = useState(false);
+  const handlePress = (col) => {
+    const updatedBoard = [...board];
 
-    const checkWin = (row, column, ch) => {
-        // EXERCISE: This function does not cover all possible winning combinations. Edit the code to cover all possibilities. A working solution in C# (don't worry--if you know JavaScript you should understand most of it) exists at https://dotnetfiddle.net/FZGpbS Line #128
-        try {
-            if (board[row + 1][column] === ch) {
-                if (board[row + 2][column] === ch) {
-                    if (board[row + 3][column] === ch) {
-                        return true;
-                    }
-                }
-            }
-        } catch (e) { console.log(e) }
+    for (let row = ROWS - 1; row >= 0; row--) {
+      if (!updatedBoard[row][col]) {
+        updatedBoard[row][col] = currentPlayer;
 
-        try {
-            if (board[row + 1][column + 1] === ch) {
-                if (board[row + 2][column + 2] === ch) {
-                    if (board[row + 3][column + 3] === ch) {
-                        return true;
-                    }
-                }
-            }
-        } catch (e) { console.log(e) }
+        // Check for a win
+        if (checkForWin(updatedBoard, row, col)) {
+          alert(`${currentPlayer} wins!`);
+          resetGame();
+        } else {
+          // Switch players
+          setCurrentPlayer(currentPlayer === 'Player 1' ? 'Player 2' : 'Player 1');
+        }
 
-        try {
-            if (board[row + 1][column - 1] === ch) {
-                if (board[row + 2][column - 2] === ch) {
-                    if (board[row + 3][column - 3] === ch) {
-                        return true;
-                    }
-                }
-            }
-        } catch (e) { console.log(e) }
-
-        try {
-            if (board[row][column + 1] === ch) {
-                if (board[row][column + 2] === ch) {
-                    if (board[row][column + 3] === ch) {
-                        return true;
-                    }
-                }
-            }
-        } catch (e) { console.log(e) }
-
-        try {
-            if (board[row][column - 1] === ch) {
-                if (board[row][column - 2] === ch) {
-                    if (board[row][column - 3] === ch) {
-                        return true;
-                    }
-                }
-            }
-        } catch (e) { console.log(e) }
-
-        try {
-            if (board[row - 1][column - 1] === ch) {
-                if (board[row - 2][column - 2] === ch) {
-                    if (board[row - 3][column - 3] === ch) {
-                        return true;
-                    }
-                }
-            }
-        } catch (e) { console.log(e) }
-
-        try {
-            if (board[row - 1][column + 1] === ch) {
-                if (board[row - 2][column + 2] === ch) {
-                    if (board[row - 3][column + 3] === ch) {
-                        return true;
-                    }
-                }
-            }
-        } catch (e) { console.log(e) }
-    };	
-
-  const updateBoard = (row, column, ch) => {
-    setBoard((prev) => {
-      const boardCopy = [...prev];
-      boardCopy[row][column] = ch;
-      return boardCopy;
-    });
-    return checkWin(row, column, ch);
-  };
-
-  const handleClick = (row, column) => {
-    let newRow = row;
-    if (row < board.length - 1 && board[newRow][column] === '') {
-        newRow += 1;
-    }
-  
-    setGameOver(updateBoard(newRow, column, currPlayer));
-  
-    if (!gameOver) {
-      const currPlayerCopy = currPlayer;
-      setCurrPlayer(oppPlayer);
-      setOppPlayer(currPlayerCopy);
+        setBoard(updatedBoard);
+        break;
+      }
     }
   };
-  
+
+  const checkForWin = (board, row, col) => {
+    // Check horizontally
+    for (let i = 0; i < 4; i++) {
+      if (
+        board[row] &&
+        board[row][col - i] === currentPlayer &&
+        board[row][col - i + 1] === currentPlayer &&
+        board[row][col - i + 2] === currentPlayer &&
+        board[row][col - i + 3] === currentPlayer
+      ) {
+        return true;
+      }
+    }
+
+    // Check vertically
+    for (let i = 0; i < 4; i++) {
+      if (
+        board[row - i] &&
+        board[row - i][col] === currentPlayer &&
+        board[row - i + 1] === currentPlayer &&
+        board[row - i + 2] === currentPlayer &&
+        board[row - i + 3] === currentPlayer
+      ) {
+        return true;
+      }
+    }
+
+    // Check diagonally (top-left to bottom-right)
+    for (let i = 0; i < 4; i++) {
+      if (
+        board[row - i] &&
+        board[row - i][col - i] === currentPlayer &&
+        board[row - i + 1] === currentPlayer &&
+        board[row - i + 2] === currentPlayer &&
+        board[row - i + 3] === currentPlayer
+      ) {
+        return true;
+      }
+    }
+
+    // Check diagonally (top-right to bottom-left)
+    for (let i = 0; i < 4; i++) {
+      if (
+        board[row - i] &&
+        board[row - i][col + i] === currentPlayer &&
+        board[row - i + 1] === currentPlayer &&
+        board[row - i + 2] === currentPlayer &&
+        board[row - i + 3] === currentPlayer
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const resetGame = () => {
+    setBoard(initialState);
+    setCurrentPlayer('Player 1');
+  };
 
   return (
     <>
-      {gameOver && (
-        <Text>
-          Game Over! {oppPlayer === 'X' ? 'Red' : 'Black'} Wins!
-        </Text>
-      )}
-      <Text style={styles.playerDisplay}>
-        {currPlayer === 'X' ? 'Red' : 'Black'} Move
-      </Text>
-      <View style={styles.board}>
-        {board.map((row, i) => (
-          <View key={i} style={styles.row}>
-            {row.map((ch, j) => (
-              <TouchableOpacity
-                key={j}
-                style={styles.cell}
-                onPress={() => handleClick(i, j)}
-                disabled={!!ch || gameOver}
-              >
-                <Text>{ch}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ))}
-      </View>
+    <View>
+      
+    </View>
+    <View style={styles.container}>
+    <Text style={styles.titleText}>Linked 4</Text>
+    <Text style={[styles.turnText, currentPlayer === 'Player 1' ? styles.playerOne : styles.playerTwo]}>{`${currentPlayer}'s Turn`}</Text>
+      {board.map((row, rowIndex) => (
+        <View key={rowIndex} style={styles.row}>
+          {row.map((cell, colIndex) => (
+            <TouchableOpacity
+            key={colIndex}
+            style={styles.cell}
+            onPress={() => handlePress(colIndex)}
+            disabled={!!cell}
+          >
+            {cell === 'Player 1' && (
+              <Image source={require('../assets/red_token.png')} style={styles.tokenImage} />
+            )}
+            {cell === 'Player 2' && (
+              <Image source={require('../assets/black_token.png')} style={styles.tokenImage} />
+            )}
+          </TouchableOpacity>
+          
+          ))}
+        </View>
+      ))}
+      <TouchableOpacity style={styles.resetButton} onPress={resetGame}>
+        <Text style={styles.resetButtonText}>Reset Game</Text>
+      </TouchableOpacity>
+    </View>
     </>
+    
   );
 };
 
-const styles = {
-  playerDisplay: {
-    // Your styles for player display
-  },
-  board: {
-    // Your styles for the board container
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#393d74',
+    marginTop: '50%',
+    padding: 'auto',
+    maxWidth: '100%',
   },
   row: {
     flexDirection: 'row',
   },
   cell: {
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     backgroundColor: 'lightblue',
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5,
+    borderRadius: 50,
   },
-};
+  cellText: {
+    fontSize: 20,
+  },
+  resetButton: {
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: '#393d74',
+    padding: 10,
+    borderRadius: 5,
+    borderColor: '#ffffff',
+    borderWidth: 2,
+  },  
+  resetButtonText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  tokenImage: {
+    height: 50,
+    width: 50,
+  },
+  titleText: {
+    fontFamily: 'Jua',
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  turnText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  playerOne: {
+    color: 'red',
+  },
+  playerTwo: {
+    color: 'black',
+  },
+});
 
 export default Board;
