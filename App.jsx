@@ -73,7 +73,7 @@ function App(){
 
   return (
     <NavigationContainer theme={navTheme}>
-      <Stack.Navigator initialRouteName='Game'>
+      <Stack.Navigator initialRouteName='Title'>
           <Stack.Screen name="Game" component={Game} options={{ headerShown: false }}/>
           <Stack.Screen name="Title" component={Title} options={{ headerShown: false }}/>
           <Stack.Screen name="Loading" component={Loading} options={{ headerShown: false }}/>
