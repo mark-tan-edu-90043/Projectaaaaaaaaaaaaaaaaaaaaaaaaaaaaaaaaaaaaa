@@ -25,12 +25,13 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'; 
 import { useNavigation } from '@react-navigation/native';
-import Game from './Game';
+import Game from './pages/Game';
 import styles from './styles';
-
+import Title from './pages/Title';
+import Loading from './pages/Loading';
 
 function Section({children, title}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -67,21 +68,16 @@ function App(){
 
   const Stack = createStackNavigator(); 
 
+  const navTheme = DefaultTheme;
+  navTheme.colors.background = '#393d74';
+
   return (
-    <NavigationContainer>
-      <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <View>
-          <Game />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer theme={navTheme}>
+      <Stack.Navigator initialRouteName='Game'>
+          <Stack.Screen name="Game" component={Game} options={{ headerShown: false }}/>
+          <Stack.Screen name="Title" component={Title} options={{ headerShown: false }}/>
+          <Stack.Screen name="Loading" component={Loading} options={{ headerShown: false }}/>
+        </Stack.Navigator>
     </NavigationContainer>
   );
 }

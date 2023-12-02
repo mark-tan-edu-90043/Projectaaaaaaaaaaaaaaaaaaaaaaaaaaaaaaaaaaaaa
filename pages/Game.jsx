@@ -11,19 +11,18 @@ import {
   Image,
 } from 'react-native';
 
-import Board from './components/Board';
-import Slot from './components/Board';
+import Board from '../components/Board';
 
-export default function Game() {
+export default function Game({navigation}) {
 
-    const placeHolder = () => {
-
-    };
+  const handleGoHome = () => {
+    navigation.navigate('Title');
+  };
 
     return(
       <View style={styles.container}>
         <Board />
-        <TouchableOpacity style={styles.button} onPress={placeHolder}>
+        <TouchableOpacity style={styles.button} onPress={handleGoHome}>
           <Text style={styles.buttonText}>Return Home</Text>
         </TouchableOpacity>
       </View>
@@ -32,7 +31,6 @@ export default function Game() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#393d74',
   },
   button: {
@@ -43,6 +41,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: '#ffffff',
     borderWidth: 2,
+    width: 200,
+    alignSelf: 'center'
   },  
   buttonText: {
     color: 'white',

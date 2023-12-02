@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
 const ROWS = 6;
 const COLS = 7;
 
-const initialState = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+const initialState = Array.from({ length: ROWS }, () => Array(COLS).fill(null)) //Resets stuff
 
 const Board = () => {
   const [board, setBoard] = useState(initialState);
@@ -32,66 +32,79 @@ const Board = () => {
     }
   };
 
-  const checkForWin = (board, row, col) => {
-    // Check horizontally
-    for (let i = 0; i < 4; i++) {
-      if (
-        board[row] &&
-        board[row][col - i] === currentPlayer &&
-        board[row][col - i + 1] === currentPlayer &&
-        board[row][col - i + 2] === currentPlayer &&
-        board[row][col - i + 3] === currentPlayer
-      ) {
-        return true;
-      }
-    }
-
-    // Check vertically
-    for (let i = 0; i < 4; i++) {
-      if (
-        board[row - i] &&
-        board[row - i][col] === currentPlayer &&
-        board[row - i + 1] === currentPlayer &&
-        board[row - i + 2] === currentPlayer &&
-        board[row - i + 3] === currentPlayer
-      ) {
-        return true;
-      }
-    }
-
-    // Check diagonally (top-left to bottom-right)
-    for (let i = 0; i < 4; i++) {
-      if (
-        board[row - i] &&
-        board[row - i][col - i] === currentPlayer &&
-        board[row - i + 1] === currentPlayer &&
-        board[row - i + 2] === currentPlayer &&
-        board[row - i + 3] === currentPlayer
-      ) {
-        return true;
-      }
-    }
-
-    // Check diagonally (top-right to bottom-left)
-    for (let i = 0; i < 4; i++) {
-      if (
-        board[row - i] &&
-        board[row - i][col + i] === currentPlayer &&
-        board[row - i + 1] === currentPlayer &&
-        board[row - i + 2] === currentPlayer &&
-        board[row - i + 3] === currentPlayer
-      ) {
-        return true;
-      }
-    }
-
-    return false;
-  };
-
-  const resetGame = () => {
-    setBoard(initialState);
+  const resetGame = () => { //Resets the board
+    setBoard((prevBoard) => { //Fixes some async errors, apparently.
+      const newBoard = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+      return newBoard;
+    });
+  
     setCurrentPlayer('Player 1');
   };
+
+  function checkForWin(grid) { //Now (exhaustively) checks every space every token token for a win.
+    for (let i = 0; i < grid.length; i++) {
+      for (let j = 0; j < grid[i].length; j++) {
+        if (grid[i][j] === currentPlayer) {
+          try {
+            if (grid[i + 1][j] === currentPlayer &&
+                grid[i + 2][j] === currentPlayer &&
+                grid[i + 3][j] === currentPlayer) {
+              return true;
+            }
+          } catch (error) {}
+  
+          try {
+            if (grid[i + 1][j + 1] === currentPlayer &&
+                grid[i + 2][j + 2] === currentPlayer &&
+                grid[i + 3][j + 3] === currentPlayer) {
+              return true;
+            }
+          } catch (error) {}
+  
+          try {
+            if (grid[i + 1][j - 1] === currentPlayer &&
+                grid[i + 2][j - 2] === currentPlayer &&
+                grid[i + 3][j - 3] === currentPlayer) {
+              return true;
+            }
+          } catch (error) {}
+  
+          try {
+            if (grid[i][j + 1] === currentPlayer &&
+                grid[i][j + 2] === currentPlayer &&
+                grid[i][j + 3] === currentPlayer) {
+              return true;
+            }
+          } catch (error) {}
+  
+          try {
+            if (grid[i][j - 1] === currentPlayer &&
+                grid[i][j - 2] === currentPlayer &&
+                grid[i][j - 3] === currentPlayer) {
+              return true;
+            }
+          } catch (error) {}
+  
+          try {
+            if (grid[i - 1][j + 1] === currentPlayer &&
+                grid[i - 2][j + 2] === currentPlayer &&
+                grid[i - 3][j + 3] === currentPlayer) {
+              return true;
+            }
+          } catch (error) {}
+  
+          try {
+            if (grid[i - 1][j - 1] === currentPlayer &&
+                grid[i - 2][j - 2] === currentPlayer &&
+                grid[i - 3][j - 3] === currentPlayer) {
+              return true;
+            }
+          } catch (error) {}
+        }
+      }
+    }
+    return false;
+  }
 
   return (
     <>
@@ -112,7 +125,7 @@ const Board = () => {
     <Text style={[styles.turnText, currentPlayer === 'Player 1' ? styles.playerOne : styles.playerTwo]}>{`${currentPlayer}'s Turn`}</Text>
       {board.map((row, rowIndex) => (
         <View key={rowIndex} style={styles.row}>
-          {row.map((cell, colIndex) => (
+          {row.map((cell, colIndex) => ( //Places the image and disables the cell to be tapped
             <TouchableOpacity
             key={colIndex}
             style={styles.cell}
@@ -141,7 +154,7 @@ const Board = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#393d74',
@@ -181,9 +194,9 @@ const styles = StyleSheet.create({
     width: 50,
   },
   titleText: {
-    fontFamily: 'Jua',
+    paddingTop: 20,
+    fontFamily: 'Jua-Regular',
     fontSize: 30,
-    fontWeight: 'bold',
     color: 'white',
     alignSelf: 'center',
   },
